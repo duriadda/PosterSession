@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edge Caching Poster</title>
+<!--
+  A0 세로(841 × 1189 mm) 포스터 초안.
+  [TODO] 표시는 확정되지 않은 자리표시자 — 저자·연구실명·QR·승환 그림 ①②.
+  PDF 출력: render.sh 실행 (Chrome headless)
+-->
+<style>
+  @page { size: 841mm 1189mm; margin: 0; }
+  :root {
+    --ink: #1b1f24;
+    --muted: #5d6670;
+    --line: #d9dde2;
+    --panel: #f4f6f8;
+    --accent: #12406e;
+    --p1: #2a78d6;
+    --p2: #eb6834;
+    --base: #9aa3ad;
+    --todo: #c0392b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #ffffff; color: var(--ink); }
+  html { height: 1188mm; overflow: hidden; }
+  body {
+    width: 841mm; height: 1188mm; overflow: hidden;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 25pt; line-height: 1.38;
+  }
+  .poster { height: 100%; display: flex; flex-direction: column; }
+
+  /* 헤더 */
+  header {
+    background: var(--accent); color: #fff;
+    padding: 20mm 30mm 15mm; position: relative;
+  }
+  header h1 { font-size: 88pt; line-height: 1.08; letter-spacing: -0.5pt; max-width: 680mm; }
+  header .sub { font-size: 34pt; margin-top: 8mm; opacity: 0.9; }
+  header .authors { font-size: 29pt; margin-top: 10mm; }
+  header .authors span { opacity: 0.8; }
+  header .logo {
+    position: absolute; right: 30mm; top: 26mm; width: 110mm; height: 70mm;
+    border: 2px dashed rgba(255,255,255,0.6); display: grid; place-items: center;
+    font-size: 20pt; opacity: 0.8; text-align: center;
+  }
+
+  main { flex: 1; min-height: 0; padding: 12mm 30mm 0; display: flex; flex-direction: column; gap: 10mm; }
+  h2 {
+    font-size: 44pt; color: var(--accent); border-bottom: 3pt solid var(--accent);
+    padding-bottom: 2mm; margin-bottom: 6mm;
+  }
+  h3 { font-size: 32pt; margin: 6mm 0 3mm; }
+  p + p { margin-top: 3mm; }
+  ul { padding-left: 11mm; }
+  li { margin: 1.6mm 0; }
+  b.p1 { color: var(--p1); } b.p2 { color: var(--p2); }
+  .muted { color: var(--muted); }
+  .small { font-size: 20pt; }
+
+  /* 개요: 글 + 시스템 그림 */
+  .overview { display: grid; grid-template-columns: 1fr 290mm; gap: 14mm; align-items: center; }
+  .overview svg { width: 100%; height: auto; }
+
+  /* 목표 */
+  .goals { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+  .goal { background: var(--panel); border-radius: 5mm; padding: 8mm 10mm; }
+  .goal .tag { font-size: 21pt; font-weight: 700; color: var(--muted); letter-spacing: 1pt; }
+  .goal .q { font-size: 31pt; font-weight: 700; margin: 2mm 0 3mm; }
+
+  /* 두 연구 */
+  .works { display: grid; grid-template-columns: 1fr 1fr; gap: 14mm; flex: 1; }
+  .work { border: 2pt solid var(--line); border-radius: 5mm; padding: 9mm 10mm; display: flex; flex-direction: column; }
+  .work h2 { font-size: 38pt; }
+  .methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 2mm 0 4mm; }
+  .m { border-radius: 3mm; padding: 4mm 5mm; font-size: 20pt; line-height: 1.3; color: #fff; }
+  .m b { display: block; font-size: 23pt; margin-bottom: 1mm; }
+  .m.base { background: var(--base); } .m.p1 { background: var(--p1); } .m.p2 { background: var(--p2); }
+  figure { margin: 3mm 0; }
+  figure img { width: 100%; display: block; }
+  figcaption { font-size: 19pt; color: var(--muted); margin-top: 1mm; }
+  .placeholder {
+    border: 3px dashed var(--todo); color: var(--todo); border-radius: 3mm;
+    height: 95mm; display: grid; place-items: center; text-align: center; font-size: 22pt; padding: 6mm;
+  }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 3mm 0; }
+  .kpi { background: var(--panel); border-radius: 3mm; padding: 4mm; text-align: center; }
+  .kpi .v { font-size: 46pt; font-weight: 800; line-height: 1.1; }
+  .kpi .l { font-size: 18pt; color: var(--muted); }
+  .takeaway {
+    margin-top: auto; background: var(--accent); color: #fff; border-radius: 3mm;
+    padding: 5mm 7mm; font-size: 25pt; font-weight: 700;
+  }
+
+  /* 하단 */
+  .bottom { display: grid; grid-template-columns: 1.15fr 0.95fr 1.1fr 110mm; gap: 12mm; padding-bottom: 12mm; }
+  .refs ol { padding-left: 9mm; font-size: 17pt; line-height: 1.3; }
+  .refs li { margin: 1.4mm 0; }
+  .qr {
+    border: 3px dashed var(--todo); color: var(--todo); border-radius: 3mm;
+    width: 110mm; height: 110mm; display: grid; place-items: center; text-align: center; font-size: 19pt;
+  }
+  .qr-label { font-size: 19pt; text-align: center; margin-top: 2mm; }
+  .todo { color: var(--todo); }
+</style>
+</head>
+<body>
+<div class="poster">
+
+<header>
+  <h1>Keep the Right Things Close:<br>Smarter Caching for AI Services at the Network Edge</h1>
+  <div class="sub">Where to store AI results, and which ones are worth the memory</div>
+  <div class="authors">
+    <span class="todo" style="color:#ffd2cc">[TODO] Author 1, Author 2 (Seunghwan), Advisor</span>
+    &nbsp;·&nbsp; <span>[TODO] Lab name, Jeonbuk National University</span>
+  </div>
+  <div class="logo">[TODO]<br>Lab / university logo</div>
+</header>
+
+<main>
+
+  <!-- 1. 개요 -->
+  <section>
+    <h2>1. Overview</h2>
+    <div class="overview">
+      <div>
+        <p>AI services (translation, chatbots, weather Q&amp;A …) run on powerful servers in a far-away
+          <b>cloud</b>. Every request travels there and waits for the model to compute an answer.</p>
+        <p>Many requests are <b>repeats</b>. If we keep a copy of the answer, or of the work already
+          done, in a small <b>edge server</b> near the user, the next person gets it much faster.</p>
+        <p>But edge servers are <b>small</b>. They can only hold a few items, so the real question is:
+          <b>what should we keep, and where?</b> Simply keeping "the most popular" items is not enough,
+          because items differ in <b>how much time they save</b> and <b>how much memory they take</b>.</p>
+      </div>
+      <!-- 시스템 그림: 사용자 → 엣지 서버 3대 → 클라우드 -->
+      <svg viewBox="0 0 660 400" role="img" aria-label="Users connect to nearby edge servers, which connect to a distant cloud">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5d6670"/>
+          </marker>
+        </defs>
+        <!-- 클라우드 -->
+        <rect x="200" y="12" width="260" height="78" rx="39" fill="#e8f1fc" stroke="#2a78d6" stroke-width="3"/>
+        <text x="330" y="46" text-anchor="middle" font-size="24" font-weight="700" fill="#12406e">Cloud (AI model)</text>
+        <text x="330" y="74" text-anchor="middle" font-size="17" fill="#5d6670">far away · slow to reach</text>
+        <!-- 엣지 서버 -->
+        <g font-size="18" fill="#1b1f24" text-anchor="middle">
+          <rect x="40"  y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <rect x="255" y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <rect x="470" y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <text x="115" y="203" font-weight="700">Edge server</text><text x="115" y="230" fill="#5d6670" font-size="16">small cache</text>
+          <text x="330" y="203" font-weight="700">Edge server</text><text x="330" y="230" fill="#5d6670" font-size="16">small cache</text>
+          <text x="545" y="203" font-weight="700">Edge server</text><text x="545" y="230" fill="#5d6670" font-size="16">small cache</text>
+        </g>
+        <g stroke="#5d6670" stroke-width="2.5" fill="none" marker-end="url(#ar)">
+          <path d="M115,168 L270,94"/><path d="M330,168 L330,94"/><path d="M545,168 L390,94"/>
+        </g>
+        <!-- 사용자 -->
+        <g fill="#1b1f24">
+          <circle cx="60" cy="330" r="13"/><circle cx="115" cy="330" r="13"/><circle cx="170" cy="330" r="13"/>
+          <circle cx="300" cy="330" r="13"/><circle cx="360" cy="330" r="13"/>
+          <circle cx="500" cy="330" r="13"/><circle cx="545" cy="330" r="13"/><circle cx="590" cy="330" r="13"/>
+        </g>
+        <g stroke="#5d6670" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <path d="M115,314 L115,256"/><path d="M330,314 L330,256"/><path d="M545,314 L545,256"/>
+        </g>
+        <text x="330" y="385" text-anchor="middle" font-size="20" fill="#5d6670">Users (close to edge servers)</text>
+        <text x="610" y="140" text-anchor="end" font-size="16" fill="#eb6834" font-weight="700">cache hit → fast</text>
+        <text x="50" y="140" font-size="16" fill="#2a78d6" font-weight="700">miss → go to cloud</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 2. 목표 -->
+  <section>
+    <h2>2. Goals</h2>
+    <div class="goals">
+      <div class="goal">
+        <div class="tag">WORK A · INTENT RESULT CACHING</div>
+        <div class="q">Which AI results go on which edge server?</div>
+        Place finished answers across <b>several</b> edge servers so the average waiting time is lowest,
+        accounting for distance and how expensive each answer is to recompute.
+      </div>
+      <div class="goal">
+        <div class="tag">WORK B · LLM PREFIX (KV) CACHING</div>
+        <div class="q">Which half-done LLM work is worth the memory?</div>
+        LLM prompts often start the same way. Keep the model's intermediate work (KV cache) for shared
+        beginnings, and pick items that give the <b>most saving per unit of GPU memory</b>.
+      </div>
+    </div>
+  </section>
+
+  <!-- 결과: 두 연구 -->
+  <section class="works">
+
+    <!-- Work A (승환) -->
+    <div class="work">
+      <h2>Work A · Placing Results on Multiple Edge Servers</h2>
+      <p><b>Key idea.</b> A cheap answer (Weather, compute time 1) is not worth storing on a far server:
+        the cloud is faster (2+2+1 = 5 &lt; 7). An expensive one (Translation, 18) is: a far server (7)
+        still beats the cloud (2+2+18 = 22).</p>
+      <div class="methods">
+        <div class="m base"><b>Baseline</b>Most popular items, spread round-robin</div>
+        <div class="m p1"><b>Full MG</b>Each step, place the item–server pair that cuts delay the most</div>
+        <div class="m p2"><b>DW</b>Same gain rule, but only on the server whose turn it is (demand-weighted)</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" style="color:var(--p1)">~20%</div><div class="l">lower delay than Baseline (Full MG)</div></div>
+        <div class="kpi"><div class="v">&lt;1%</div><div class="l">from the true optimum (MILP), avg.</div></div>
+        <div class="kpi"><div class="v" style="color:var(--p2)">&lt;½</div><div class="l">compute of Full MG for DW-distance, losing 1–2%</div></div>
+      </div>
+      <figure>
+        <div class="placeholder">[TODO] poster_figs/fig1_improvement_vs_R<br>Improvement over Baseline vs. number of users (R)</div>
+        <figcaption>Full MG is best in all 60 settings (19.9–23.0% at N = 50).</figcaption>
+      </figure>
+      <figure>
+        <img src="figs/fig_intent_density.svg" alt="Average delay for four user-density and capacity scenarios">
+        <figcaption>Realistic scenario (N = 50, R = 30, users clustered 20:30:50). Giving more cache to
+          the busier server (3/5/7) gives the lowest delay; the opposite (7/5/3) is worst.</figcaption>
+      </figure>
+      <div class="takeaway">Weigh distance and recompute cost, not just popularity, and size each server's cache to its crowd.</div>
+    </div>
+
+    <!-- Work B (본인) -->
+    <div class="work">
+      <h2>Work B · Choosing LLM Prefixes to Cache</h2>
+      <p><b>Key idea.</b> On a real edge GPU, many models and precisions run side by side. Two prefixes
+        of the same length can cost the <b>same compute</b> but use up to <b>9× (model) and 4× (precision)
+        different memory</b>. That is where smart selection pays off.</p>
+      <div class="methods">
+        <div class="m base"><b>Baseline</b>Most popular first</div>
+        <div class="m p1"><b>Proposed #1</b>Popular × costly to compute</div>
+        <div class="m p2"><b>Proposed #2</b>(Popular × costly) ÷ memory used</div>
+      </div>
+      <figure>
+        <img src="figs/fig_kv_vs_baseline.svg" alt="Improvement over Baseline for Proposed 1 and 2">
+        <figcaption>20 prefixes, keep top 5, median of 50 random setups. #1 cuts delay most but uses
+          ~1.5× memory; #2 uses less memory and saves 85% more per unit of memory.</figcaption>
+      </figure>
+      <figure>
+        <img src="figs/fig_kv_heatmap.svg" alt="Saving per unit memory of Proposed 2 over Proposed 1">
+        <figcaption>Saving per unit memory, #2 vs. #1 (cell: median, wins out of 50; hatched = fewer than 40 wins).
+          With 100 prefixes and 20% kept: <b>+87%</b> (50/50) and still <b>10.7%</b> faster than Baseline (49/50).</figcaption>
+      </figure>
+      <div class="takeaway">Need speed? Use #1. Short on GPU memory? Use #2. They optimise different goals.</div>
+    </div>
+
+  </section>
+
+  <!-- 하단: 결론 · 향후 계획 · 참고문헌 · QR -->
+  <section class="bottom">
+    <div>
+      <h2>3. Conclusion</h2>
+      <ul>
+        <li>"Most popular first" leaves a lot on the table at the edge.</li>
+        <li>Work A: cost- and distance-aware placement cuts delay by <b>~20%</b>, within <b>1%</b> of optimal.</li>
+        <li>Work B: memory-aware selection gives <b>+85%</b> saving per unit memory over Baseline.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>4. Future Work</h2>
+      <ul>
+        <li>More edge servers (5, 10)</li>
+        <li>Requests that change over time</li>
+        <li>Real GPU profiling of compute and memory costs</li>
+      </ul>
+    </div>
+    <div class="refs">
+      <h2>5. References</h2>
+      <ol>
+        <li>K. Shanmugam et al., "FemtoCaching," <i>IEEE Trans. Inf. Theory</i>, 2013.</li>
+        <li>Z. Qu et al., "TrimCaching," <i>IEEE ICDCS</i>, 2024.</li>
+        <li>L. Breslau et al., "Web caching and Zipf-like distributions," <i>IEEE INFOCOM</i>, 1999.</li>
+        <li>J. Wang et al., "KVCache Cache in the Wild," <i>USENIX ATC</i>, 2025.</li>
+        <li>L. Yang, Z. Liu, "Spatial Prefix Caching for Wireless Edge LLM Inference."</li>
+      </ol>
+    </div>
+    <div>
+      <div class="qr">[TODO]<br>Lab website<br>QR code</div>
+      <div class="qr-label">Visit our lab</div>
+    </div>
+  </section>
+
+</main>
+</div>
+</body>
+</html>
