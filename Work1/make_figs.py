@@ -51,6 +51,12 @@ def clean(ax):
     ax.set_axisbelow(True)
 
 
+def save(fig, name):
+    # HTML 포스터용 SVG + PPT 포스터용 PNG(300dpi)
+    fig.savefig(os.path.join(OUT, name + ".svg"))
+    fig.savefig(os.path.join(OUT, name + ".png"), dpi=300)
+
+
 def fig_kv_vs_baseline():
     # Baseline 대비 개선율 (+ 가 좋음). 사용 메모리는 '절약률'이라 + 가 덜 쓴 것.
     metrics = ["Delay\nreduction", "Memory\nsaved", "Saving per\nunit memory"]
@@ -76,7 +82,7 @@ def fig_kv_vs_baseline():
     clean(ax)
     ax.legend(frameon=False, fontsize=11.5, loc="upper left")
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "fig_kv_vs_baseline.svg"))
+    save(fig, "fig_kv_vs_baseline")
     plt.close(fig)
 
 
@@ -113,7 +119,7 @@ def fig_kv_heatmap():
     for sp in ax.spines.values():
         sp.set_visible(False)
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "fig_kv_heatmap.svg"))
+    save(fig, "fig_kv_heatmap")
     plt.close(fig)
 
 
@@ -140,7 +146,7 @@ def fig_intent_density():
     ax.set_axisbelow(True)
     ax.tick_params(axis="y", length=0)
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "fig_intent_density.svg"))
+    save(fig, "fig_intent_density")
     plt.close(fig)
 
 

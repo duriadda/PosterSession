@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="400" font-family="Helvetica Neue, Arial, sans-serif" viewBox="0 0 660 400" role="img" aria-label="Users connect to nearby edge servers, which connect to a distant cloud">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5d6670"/>
+          </marker>
+        </defs>
+        <!-- 클라우드 -->
+        <rect x="200" y="12" width="260" height="78" rx="39" fill="#e8f1fc" stroke="#2a78d6" stroke-width="3"/>
+        <text x="330" y="46" text-anchor="middle" font-size="24" font-weight="700" fill="#12406e">Cloud (AI model)</text>
+        <text x="330" y="74" text-anchor="middle" font-size="17" fill="#5d6670">far away · slow to reach</text>
+        <!-- 엣지 서버 -->
+        <g font-size="18" fill="#1b1f24" text-anchor="middle">
+          <rect x="40"  y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <rect x="255" y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <rect x="470" y="170" width="150" height="82" rx="10" fill="#fdf0e9" stroke="#eb6834" stroke-width="3"/>
+          <text x="115" y="203" font-weight="700">Edge server</text><text x="115" y="230" fill="#5d6670" font-size="16">small cache</text>
+          <text x="330" y="203" font-weight="700">Edge server</text><text x="330" y="230" fill="#5d6670" font-size="16">small cache</text>
+          <text x="545" y="203" font-weight="700">Edge server</text><text x="545" y="230" fill="#5d6670" font-size="16">small cache</text>
+        </g>
+        <g stroke="#5d6670" stroke-width="2.5" fill="none" marker-end="url(#ar)">
+          <path d="M115,168 L270,94"/><path d="M330,168 L330,94"/><path d="M545,168 L390,94"/>
+        </g>
+        <!-- 사용자 -->
+        <g fill="#1b1f24">
+          <circle cx="60" cy="330" r="13"/><circle cx="115" cy="330" r="13"/><circle cx="170" cy="330" r="13"/>
+          <circle cx="300" cy="330" r="13"/><circle cx="360" cy="330" r="13"/>
+          <circle cx="500" cy="330" r="13"/><circle cx="545" cy="330" r="13"/><circle cx="590" cy="330" r="13"/>
+        </g>
+        <g stroke="#5d6670" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <path d="M115,314 L115,256"/><path d="M330,314 L330,256"/><path d="M545,314 L545,256"/>
+        </g>
+        <text x="330" y="385" text-anchor="middle" font-size="20" fill="#5d6670">Users (close to edge servers)</text>
+        <text x="610" y="140" text-anchor="end" font-size="16" fill="#eb6834" font-weight="700">cache hit → fast</text>
+        <text x="50" y="140" font-size="16" fill="#2a78d6" font-weight="700">miss → go to cloud</text>
+      </svg>
