@@ -28,6 +28,9 @@ FIGS = os.path.join(HERE, "figs")
 MM = 36000                      # 1 mm = 36000 EMU
 NAVY = '<a:schemeClr val="accent5"><a:lumMod val="50000"/></a:schemeClr>'   # 템플릿 글자색
 P1, P2, TODO = "2A78D6", "EB6834", "C0392B"
+LAB_NAME = "NEXT Lab"
+LAB_URL = "https://sites.google.com/view/nextlab-web/"
+LAB_EMAIL = "jh.sung@jbnu.ac.kr"
 
 # 템플릿 패널 좌표 (mm)
 LX, RX, CW = 18, 426, 397
@@ -203,7 +206,7 @@ def build_shapes():
     # 제목·저자·소속
     S.append(ph(153, 114, 24, 614, 72, [para(["Keep the Right Things Close: Smarter Caching for AI Services at the Network Edge"], align="ctr", sz=80, after=0)], autofit=False))
     S.append(ph(151, 114, 98, 614, 26, [para([T("[TODO] Author 1, Seunghwan [surname], Advisor")], align="ctr", sz=50, after=0)], autofit=False))
-    S.append(ph(150, 114, 126, 614, 24, [para([T("[TODO] Lab name, Dept. of ___, Jeonbuk National University")], align="ctr", sz=40, after=0)], autofit=False))
+    S.append(ph(150, 114, 126, 614, 24, [para([LAB_NAME + ", ", T("[TODO] Dept. of ___"), ", Jeonbuk National University"], align="ctr", sz=40, after=0)], autofit=False))
 
     # ── 왼쪽 패널 ──
     y = 186
@@ -297,14 +300,13 @@ def build_shapes():
     y += GAP
     S.append(ph(29, RX, y, CW, 22, [para(["CONTACT"], align="ctr", after=0)]))
     y += 24
-    S.append(shape(RX + 16, y, 100, 100, [para([T("[TODO]")], align="ctr", sz=26, after=0),
-                                         para([("Lab website QR", {"color": TODO})], align="ctr", sz=22, after=0)],
-                   fill=None, line=TODO, dash=True, geom="rect", name="QR Placeholder"))
+    # QR 이미지(figs/qr_lab.png)는 연구실 사이트 URL 로 따로 생성해 둔다
+    add(picture("qr_lab.png", RX + 16, y, 100, "QR code linking to " + LAB_URL))
     add(block(RX + 124, y + 4, CW - 129, [
         dict(runs=[B("Scan to visit our lab")], after=6),
-        dict(runs=[T("[TODO] Lab name")], after=2),
-        dict(runs=[T("[TODO] https://lab-website")], after=2),
-        dict(runs=[T("[TODO] email@jbnu.ac.kr")], after=0),
+        dict(runs=[LAB_NAME], after=2),
+        dict(runs=[LAB_URL], after=2),
+        dict(runs=[LAB_EMAIL], after=0),
     ], idx=30))
     print("bottom: right = %.0f mm (panel ends ~1155)" % (y + 100))
     return S

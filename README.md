@@ -22,9 +22,12 @@
 | HTML 포스터 (초기 시안) | ✅ 완료 — `Work1/poster.html` → `poster.pdf` |
 | Work B 그래프 2종 | ✅ 기존 측정값으로 생성 |
 | Work A 시나리오 비교 그래프 | ✅ txt 8절 수치로 생성 |
-| Work A `fig1_improvement_vs_R` | ⏳ 승환 원본 그림 필요 (txt 에는 구간 값만 있음) |
-| 저자·소속·로고 | ⏳ 미입력 |
-| 연구실 사이트 QR | ⏳ URL 확인 필요 |
+| Work A 결과 그래프 | ✅ 승환이 pptx 에 직접 교체 (지연 막대그래프 · 연산량 log-log, 커밋 2f5139e) |
+| 저자 | ✅ Hyeonug Jang, Seunghwan Lee (영문 표기 확인 필요) |
+| 로고 | ⏳ 미입력 |
+| 연구실 사이트 QR | ✅ `Work1/figs/qr_lab.png` (https://sites.google.com/view/nextlab-web/) |
+| 연구실 이름·연락 이메일 | ✅ NEXT Lab · jh.sung@jbnu.ac.kr |
+| 소속 학과 | ✅ Dept. of IT Intelligence Information Engineering (공식 영문명 확인 필요) |
 
 포스터에서 빨간 `[TODO]` 로 표시된 곳이 남은 입력 항목이다.
 
@@ -63,3 +66,7 @@ cd Work1
 
 `build_pptx.py` 를 다시 실행하면 `poster.pptx` 를 **덮어쓴다**. PowerPoint 에서 직접 고친 내용이
 있다면 먼저 다른 이름으로 저장해 둘 것.
+
+> ⚠️ 현재 `poster.pptx` 에는 승환의 Work A 수정(커밋 2f5139e: 그래프 교체, MILP 제거, 참고문헌 정리)이
+> **pptx 에 직접** 들어가 있고 `build_pptx.py` 에는 반영되어 있지 않다. 지금은 `build_pptx.py` 를 실행하지 말고
+> `poster.pptx` 를 직접 고칠 것.
