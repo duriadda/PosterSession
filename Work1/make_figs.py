@@ -7,6 +7,7 @@ make_figs.py
 [출처]
   fig_kv_vs_baseline : 시뮬레이션/TOPK_RESULTS.md 4절 (객체 20개 · top-5 · 시드 50개 중앙값)
   fig_kv_heatmap     : 시뮬레이션/analysis/results/12_fine_sweep.json (8절 세밀 측정)
+  fig_kv_eff_by_cache: 같은 파일의 객체 100개 행만 (PPT 포스터에서 히트맵 대신 사용)
   fig_intent_density : 승환 Intent Caching.txt 8절 (N=50, R=30, Full MG 의 J)
 
 승환 결과 ①②(fig1_improvement_vs_R, fig2_tradeoff)는 구간 값만 있어 여기서 그리지 않는다.
@@ -52,9 +53,9 @@ def clean(ax):
 
 
 def save(fig, name):
-    # HTML 포스터용 SVG + PPT 포스터용 PNG(300dpi)
+    # HTML 포스터용 SVG + PPT 포스터용 PNG. A0 에서 360mm 폭으로 들어가므로 450dpi 로 저장(인쇄 시 ~270dpi)
     fig.savefig(os.path.join(OUT, name + ".svg"))
-    fig.savefig(os.path.join(OUT, name + ".png"), dpi=300)
+    fig.savefig(os.path.join(OUT, name + ".png"), dpi=450)
 
 
 def fig_kv_vs_baseline():
@@ -66,8 +67,8 @@ def fig_kv_vs_baseline():
     fig, ax = plt.subplots(figsize=(8.4, 3.7))
     x = range(len(metrics))
     w = 0.36
-    b1 = ax.bar([i - w / 2 for i in x], p1, w, color=C_P1, label="Proposed #1  (popularity × cost)")
-    b2 = ax.bar([i + w / 2 for i in x], p2, w, color=C_P2, label="Proposed #2  (… ÷ memory)")
+    b1 = ax.bar([i - w / 2 for i in x], p1, w, color=C_P1, label="Proposed #1  (Popularity × Compute Cost)")
+    b2 = ax.bar([i + w / 2 for i in x], p2, w, color=C_P2, label="Proposed #2  (… / Memory Usage)")
     for bars in (b1, b2):
         for b in bars:
             v = b.get_height()
@@ -123,6 +124,37 @@ def fig_kv_heatmap():
     plt.close(fig)
 
 
+def fig_kv_eff_by_cache():
+    # 히트맵 단순화판: 객체 100개 한 줄만 그려 "캐시 크기와 무관하게 #2 가 #1 보다 메모리당 ~80–100% 더 절감"
+    # 을 바로 읽히게 한다. 0 선 = Proposed #1 수준.
+    with open(SWEEP) as f:
+        d = json.load(f)
+    rows = sorted((c for c in d["grid"] if c["n_obj"] == 100), key=lambda c: c["frac"])
+    xs = [round(c["frac"] * 100) for c in rows]
+    ys = [c["eff"] for c in rows]
+
+    # 단순화한 그림이라 높이를 줄여 결론 칸 공간을 확보
+    fig, ax = plt.subplots(figsize=(8.4, 3.0))
+    ax.axhline(0, color=INK, linewidth=1.2)
+    ax.text(xs[-1], 4, "Proposed #1 level", ha="right", va="bottom", fontsize=11.5, color=MUTED)
+    ax.fill_between(xs, 0, ys, color=C_P2, alpha=0.12, linewidth=0)
+    ax.plot(xs, ys, color=C_P2, linewidth=2.5, marker="o", markersize=9,
+            markeredgecolor="white", markeredgewidth=2, zorder=3)
+    for x, y in zip(xs, ys):
+        ax.text(x, y + 6, "+%.0f%%" % y, ha="center", va="bottom", fontsize=12.5,
+                color=INK, fontweight="bold")
+    ax.set_xticks(xs)
+    ax.set_xticklabels(["%d%%" % x for x in xs])
+    ax.set_xlabel("Cache size (% of prefixes kept)")
+    ax.set_ylabel("Extra saving per unit memory,\n#2 over #1 (%)")
+    ax.set_ylim(-8, 125)
+    ax.set_xlim(xs[0] - 2, xs[-1] + 2)
+    clean(ax)
+    fig.tight_layout()
+    save(fig, "fig_kv_eff_by_cache")
+    plt.close(fig)
+
+
 def fig_intent_density():
     # 차이가 1~2% 수준이라 0 기준 막대로는 안 보인다 → 점 그림 + 잘린 축임을 명시
     labels = ["Uniform users\n(5/5/5)", "Clustered users\n(5/5/5)",
@@ -154,5 +186,6 @@ if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     fig_kv_vs_baseline()
     fig_kv_heatmap()
+    fig_kv_eff_by_cache()
     fig_intent_density()
     print("saved to", OUT)
