@@ -42,7 +42,7 @@
 
 - **Work B 막대그래프**: 객체 20개 · 상위 5개 · 시드 50개 중앙값 (`TOPK_RESULTS.md` 4절)
   - `PRESENTATION_BRIEF.md` 의 시드 30개 값(+31.9% 등)이 아니라 더 최신인 시드 50개 값을 썼다
-- **Work B 꺾은선 그래프**: `analysis/results/12_fine_sweep.json` 의 객체 100개 행 (캐시 비율별 Proposed #2 vs #1 메모리당 절감). 같은 파일 전체로 그린 히트맵은 HTML 시안에만 남아 있다
+- **Work B 두 번째 그래프**: 11/09 추가 수정사항 5번에 따라 **삭제**. 시도했던 히트맵 · 캐시 크기별 꺾은선(`fig_kv_eff_by_cache`) · prefix 길이별(`fig_kv_by_length`) 그림은 `make_figs.py` 와 `figs/` 에만 남아 있다
 - **Work A**: `승환 Intent Caching.txt` 의 seed 1~40 평균값 그대로. 시나리오 비교 그래프는 값 차이가 1~2% 라 축을 6.30 부터 시작한다(라벨에 명시)
 - 참고문헌 4편: Wang et al. (ATC'25), Regmi & Pun (arXiv'24), Tian et al. (ATC'25), Gao et al. (INFOCOM'25 — `논문작성/참고논문/` PDF 로 서지 확인)
 
@@ -131,3 +131,51 @@ cd Work1
 
 - 내용적인 부분과 무관하게 A0 사이즈를 고려할 때 폰트 크기나 그림 크기 등 적절한지도 가능하다면 툴 등을 활용해서 확인해보면 좋을 것 같음
 ===============================
+
+## 추가 수정사항
+### 1. 제목 및 Results 구성
+- 제목은 의미 단위에 맞춰 다음처럼 줄바꿈하는 것이 좋을 듯.
+  - Keep the Right Things Close: (줄바꿈)
+      Smarter Caching for AI Services at the Network Edge
+- 현재 Results 제목이 Work A는 WHERE TO PLACE RESULTS, Work B는 WHAT TO CACHE인데, 이게 맞나요? Work B는 진도상 single server에 대해서만 고려하고 있어 what to cache라고 해도 무방하겠지만, Work A는 what과 where를 모두 고려하므로 구분이 정확하지 않은 것 같은데요. 이게 맞다면 차라리 아래처럼 캐싱 대상을 기준으로 통일하면 어떨까요?
+  - RESULTS ① · WORK A: INFERENCE-RESULT CACHING
+  - RESULTS ② · WORK B: PREFIX KV CACHING
+
+### 2. Work A – 첫 번째 그래프
+- Full MG, DW MG의 풀네임이 명확히 기술되지 않은 것 같음. 최초 등장 시 Marginal Gain 및 Full, DW 등 의미를 명시.
+- y축의 `Average delay J`에서 J가 무엇을 의미하는지? 별도로 정의하지 않았다면 Average Delay로 표시하는 것이 좋을 듯.
+- 사용자 수 R이 증가함에 따른 경향성을 설명할 수 있는지? 현재는 사용자 수에 따른 차이가 크지 않아 보이는데, 특별히 보여주려는 경향이 없다면 여러 사용자 수에 대한 결과를 모두 제시할 필요가 있는지 모르겠음. 필요하다면 그래프를 통해서 전달하고자 하는 바가 극대화될 수 있는 다른 형태의 그래프로 표현하는 게 좋을 듯.
+
+### 3. Work A – 두 번째 그래프
+- # of G evaluations에서 G가 무엇을 의미하는지 모르겠음.
+- 그래프만 보고 무엇을 비교하는지 바로 이해하기 어려움.
+
+### 4. Work B – 첫 번째 그래프
+- Key idea. An edge GPU runs many models and precisions. Prefixes of the same length cost the same compute but use up to 9× (model) and 4× (precision) more memory. 여기서 9×(model)과 4×(precision)이 각각 무엇을 의미하는지 바로 이해하기 어려움. 해당 수치가 핵심 메시지와 직접적인 관련이 없다면 생략하는 것이 좋을 듯. 필요하다면 의미가 좀 더 명확하게 드러나도록 수정하면 좋겠음.
+
+- 범례의 Proposed #2 (... / Memory Usage)에서 ... 부분 수정 필요.
+
+### 5. Work B – 두 번째 그래프
+- 현재 그래프가 어떤 의미인지 직관적으로 이해하기 어려움.
+- With 100 prefixes, #2 saves 81–104% more delay per unit memory than #1 at every cache size (better in all 50 runs).라는 설명도 무엇을 의미하는지 쉽게 이해되지 않음.
+- 캐시 크기가 증가할 때 상대적 개선율이 일정하게 감소하지는 않는데, 이러한 결과가 나타나는 이유를 설명할 수 있는지? 이유를 명확히 설명할 수 없다면 해당 그래프를 제외하거나, 전달하고자 하는 바가 잘 드러나도록 다른 형태의 그래프도 대체 필요. 단순히 여러 캐시 크기에서 Proposed #2가 우수하다는 것을 보여주는 목적이라면, 현재처럼 그래프를 별도로 제시할 필요가 있는지 검토하면 좋겠음.
+- 첫 번째 그래프와 비교해 어떤 추가적인 메시지를 전달하려는 것인지도 확인 필요.
+
+================
+
+## 마지막 수정사항
+
+1. Work A의 계산량 관련 문구 수정
+   - "DW MG needs less than half of Full MG’s computation"에서 `computation`보다는 `gain evaluations`라는 용어를 사용하는 것이 좋겠습니다. 그래프에서도 동일하게 수정이 필요해 보입니다.
+   - 예: DW MG requires fewer than half as many gain evaluations as Full MG.
+
+2. Work B의 Key Idea 수정
+   - Prefill computation cost and KV-cache memory usage may grow at different rates with prefix length. Considering both can improve caching efficiency.
+   - 기존 연구 의도가 좀 더 명확하게 드러나도록 표현을 수정했습니다.
+
+3. 전체적인 배치 조정
+   - 위 문구들을 수정하면서 일부 배치가 어색해진 부분이 있는데, Work A와 Work B의 배치 순서를 바꾸고 Goals 그림도 조금 더 크게 배치하면 전체적인 균형이 좋아질 것 같습니다. 다만 작업 범위가 너무 커질 것 같다면 무리해서 수정할 필요까지는 없겠습니다.
+
+4. Conclusion의 추가 문구 삭제
+   - "Memory-budgeted caching under a GB limit (not a fixed count), compared with the knapsack optimum"
+   - 다른 항목에 비해 지나치게 구체적이고, 구체성의 수준도 다소 맞지 않는 것 같아 삭제하는 것이 좋겠습니다.

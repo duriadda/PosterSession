@@ -7,7 +7,8 @@ make_figs.py
 [출처]
   fig_kv_vs_baseline : 시뮬레이션/TOPK_RESULTS.md 4절 (객체 20개 · top-5 · 시드 50개 중앙값)
   fig_kv_heatmap     : 시뮬레이션/analysis/results/12_fine_sweep.json (8절 세밀 측정)
-  fig_kv_eff_by_cache: 같은 파일의 객체 100개 행만 (PPT 포스터에서 히트맵 대신 사용)
+  fig_kv_eff_by_cache: 같은 파일의 객체 100개 행만 (11/07 포스터에서 히트맵 대신 사용)
+  fig_kv_by_length   : 시뮬레이션/TOPK_RESULTS.md 3-4절 (prefix 길이 상한별, 11/09 이후 위 그림 대신 사용)
   fig_intent_density : 승환 Intent Caching.txt 8절 (N=50, R=30, Full MG 의 J)
 
 승환 결과 ①②(fig1_improvement_vs_R, fig2_tradeoff)는 구간 값만 있어 여기서 그리지 않는다.
@@ -64,24 +65,26 @@ def fig_kv_vs_baseline():
     p1 = [28.4, -47.2, -5.2]
     p2 = [8.0, 33.3, 85.3]
 
-    fig, ax = plt.subplots(figsize=(8.4, 3.7))
+    # 11/09: 글자 10% 키움. poster_edit 배치(왼쪽 아래 CONTACT)에 맞춰 높이 4.4 → 3.8
+    fig, ax = plt.subplots(figsize=(8.4, 3.8))
     x = range(len(metrics))
     w = 0.36
     b1 = ax.bar([i - w / 2 for i in x], p1, w, color=C_P1, label="Proposed #1  (Popularity × Compute Cost)")
-    b2 = ax.bar([i + w / 2 for i in x], p2, w, color=C_P2, label="Proposed #2  (… / Memory Usage)")
+    b2 = ax.bar([i + w / 2 for i in x], p2, w, color=C_P2, label="Proposed #2  ((Popularity × Compute Cost) / Memory Usage)")
     for bars in (b1, b2):
         for b in bars:
             v = b.get_height()
             ax.text(b.get_x() + b.get_width() / 2, v + (2.5 if v >= 0 else -2.5), "%+.1f%%" % v,
-                    ha="center", va="bottom" if v >= 0 else "top", fontsize=12, color=INK,
+                    ha="center", va="bottom" if v >= 0 else "top", fontsize=13, color=INK,
                     fontweight="bold")
     ax.axhline(0, color=INK, linewidth=1.2)
     ax.set_xticks(list(x))
-    ax.set_xticklabels(metrics, fontsize=13)
-    ax.set_ylabel("Improvement over Baseline (%)")
-    ax.set_ylim(-62, 102)
+    ax.set_xticklabels(metrics, fontsize=14.5)
+    ax.tick_params(axis="y", labelsize=14.5)
+    ax.set_ylabel("Improvement over Baseline (%)", fontsize=14.5)
+    ax.set_ylim(-62, 108)
     clean(ax)
-    ax.legend(frameon=False, fontsize=11.5, loc="upper left")
+    ax.legend(frameon=False, fontsize=12.5, loc="upper left")
     fig.tight_layout()
     save(fig, "fig_kv_vs_baseline")
     plt.close(fig)
@@ -155,6 +158,39 @@ def fig_kv_eff_by_cache():
     plt.close(fig)
 
 
+def fig_kv_by_length():
+    # Proposed #2 vs #1 을 prefix 길이 상한별로: 메모리당 절감 우위는 유지되고 지연 손해는 길이와 함께 커진다.
+    # 막대그래프와 같은 조건(객체 20개 · top-5 · 시드 50개 중앙값). 출처: TOPK_RESULTS.md 3-4절
+    caps = [200, 500, 999, 4000, 16000]
+    eff = [75.1, 75.2, 75.3, 73.9, 59.9]
+    delay = [-7.6, -15.6, -25.7, -43.1, -48.1]
+
+    fig, ax = plt.subplots(figsize=(8.4, 3.0))
+    ax.axhline(0, color=INK, linewidth=1.2)
+    ax.text(caps[0], 3, "Proposed #1 level", ha="left", va="bottom", fontsize=11.5, color=MUTED)
+    ax.plot(caps, eff, color=C_P2, linewidth=2.5, marker="o", markersize=9,
+            markeredgecolor="white", markeredgewidth=2, zorder=3, label="Saving per unit memory")
+    ax.plot(caps, delay, color=MUTED, linewidth=2.5, linestyle="--", marker="o", markersize=9,
+            markeredgecolor="white", markeredgewidth=2, zorder=3, label="Delay reduction")
+    for x, y in zip(caps, eff):
+        ax.text(x, y + 6, "+%.0f%%" % y, ha="center", va="bottom", fontsize=12.5, color=INK, fontweight="bold")
+    for x, y in zip(caps, delay):
+        ax.text(x, y - 6, "%.0f%%" % y, ha="center", va="top", fontsize=12.5, color=INK, fontweight="bold")
+    ax.set_xscale("log")
+    ax.set_xticks(caps)
+    ax.set_xticklabels(["~200", "~500", "~1k", "~4k", "~16k"])
+    ax.minorticks_off()
+    ax.set_xlabel("Prefix length limit (tokens, log scale)")
+    ax.set_ylabel("#2 vs. #1 (%)")
+    ax.set_ylim(-75, 100)
+    ax.set_xlim(150, 22000)
+    clean(ax)
+    ax.legend(frameon=False, fontsize=11.5, loc="center right", bbox_to_anchor=(1.0, 0.62))
+    fig.tight_layout()
+    save(fig, "fig_kv_by_length")
+    plt.close(fig)
+
+
 def fig_intent_density():
     # 차이가 1~2% 수준이라 0 기준 막대로는 안 보인다 → 점 그림 + 잘린 축임을 명시
     labels = ["Uniform users\n(5/5/5)", "Clustered users\n(5/5/5)",
@@ -187,5 +223,6 @@ if __name__ == "__main__":
     fig_kv_vs_baseline()
     fig_kv_heatmap()
     fig_kv_eff_by_cache()
+    fig_kv_by_length()
     fig_intent_density()
     print("saved to", OUT)
